@@ -25,11 +25,16 @@ static char scancode_to_ascii_shift[128] = {
 
 static int shift_pressed = 0;
 static int ctrl_pressed = 0;
+static int extended = 0;
+
+static void shell_send_str(const char *s);
 
 void keyboard_callback(registers_t *regs)
 {
+    (void)regs;
+    uint8_t scancode = inb(0x60);
 
-	if (scancode = 0xE0) {extended = 1; return;}
+	if (scancode == 0xE0) {extended = 1; return;}
 	if (extended) {
 		extended = 0;
 		if (scancode & 0x80) return;
@@ -41,9 +46,6 @@ void keyboard_callback(registers_t *regs)
 		}
 		return;
 	}
-
-    (void)regs;
-    uint8_t scancode = inb(0x60);
 
         // Shift captured
     if (scancode == 0x2A || scancode == 0x36) {
