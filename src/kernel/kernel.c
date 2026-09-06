@@ -70,7 +70,7 @@ void animate_logo(void) {
     }
   }
 
-  const char *target_text = " Auri-Os - Kernel v0.2 ";
+  const char *target_text = " Auri-Os - Kernel v0.2.2 ";
   int text_len = strlen(target_text);
   int text_x = 28;
   int text_y = 17;
@@ -129,6 +129,8 @@ void init_mem(multiboot_info_t *mboot_ptr) {
     uint32_t bitmap_size = (max_ram_addr / 4096) / 8;
     pmm_mark_region_used(0x100000, (kernel_end_addr - 0x100000) + bitmap_size);
     pmm_mark_region_used(0x0, 4096);
+    // boot stack top is 0x90000 (loader.s), grows down: reserve 64 KB below it
+    pmm_mark_region_used(0x80000, 0x10000);
     KINFO("[PMM] Physical Memory Manager initialized by Zig.");
   }
   else {
@@ -170,7 +172,7 @@ void kernel_main(uint32_t magic, multiboot_info_t *mboot_ptr) {
   }
 
 
-  terminal_writestring("AuriOS Kernel v0.2\n");
+  terminal_writestring("AuriOS Kernel v0.2.2\n");
   sleep(100);
   terminal_writestring("GDT initialized successfully\n");
   sleep(50);
